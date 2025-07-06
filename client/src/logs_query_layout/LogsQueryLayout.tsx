@@ -73,9 +73,10 @@ const LogsQueryLayout = () => {
 
   //filters api call
   useEffect(() => {
-    const filters = {
-      [searchBy as string]: searchTerm.trim(),
-    };
+    const filters: Record<string, string> = {};
+    if (searchBy) {
+      filters[searchBy] = searchTerm.trim();
+    }
     if (spanId && spanId?.length > 0) {
       filters.spanId = spanId.join(",");
     }
@@ -89,11 +90,6 @@ const LogsQueryLayout = () => {
     }
     debounceFetch(filters);
   }, [searchTerm, searchBy, debounceFetch, spanId, level, dateRange]);
-
-  //initial get call
-  useEffect(() => {
-    fetchLogs();
-  }, []);
 
   const renderDescription = (
     message: string,
