@@ -32,6 +32,8 @@ const searchByOptions = [
   },
 ];
 
+//TODO : --- have to handle dateRange in unix for efficient querying
+
 const LogsQueryLayout = () => {
   const [level, setLevel] = useState<string[] | null>(null);
   const [searchBy, setSearchBy] = useState<string | null>("message");
