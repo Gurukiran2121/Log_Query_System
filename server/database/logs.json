@@ -1,5 +1,6 @@
 [
   {
+    "id": "d3b07384-23a3-4b6b-8c26-3d3f4b4e7233",
     "level": "error",
     "message": "Failed to connect to primary database after 3 retries.",
     "resourceId": "server-1234",
@@ -12,6 +13,7 @@
     }
   },
   {
+    "id": "a2b9d7c6-1e8a-4f5c-8b7a-9c8d7e6f5a4b",
     "level": "warning",
     "message": "API response time exceeded 500ms for endpoint /users.",
     "resourceId": "server-5678",
@@ -24,6 +26,7 @@
     }
   },
   {
+    "id": "f4c3b2a1-d987-4e6f-8c5d-4b3a2c1d0e9f",
     "level": "info",
     "message": "User authenticated successfully. userId: usr_12345",
     "resourceId": "server-1234",
@@ -36,6 +39,7 @@
     }
   },
   {
+    "id": "b1a2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
     "level": "info",
     "message": "New log ingestion endpoint called.",
     "resourceId": "server-5678",
@@ -48,6 +52,7 @@
     }
   },
   {
+    "id": "e6f5a4b3-c2d1-4b8c-9a0e-1f2a3b4c5d6e",
     "level": "error",
     "message": "Failed to write to log file: EACCES: permission denied.",
     "resourceId": "server-1234",
@@ -60,6 +65,7 @@
     }
   },
   {
+    "id": "c9d8e7f6-a5b4-4c3d-8b1a-2c3d4e5f6a7b",
     "level": "error",
     "message": "Failed to connect to secondary database after 3 retries.",
     "resourceId": "second-server-1234",
@@ -72,6 +78,7 @@
     }
   },
   {
+    "id": "8a7b6c5d-4e3f-4a2b-9c1d-0e9f8a7b6c5d",
     "level": "warning",
     "message": "Failed to connect to secondary database after 3 retries.",
     "resourceId": "second-server-1234",

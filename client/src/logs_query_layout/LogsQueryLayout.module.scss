@@ -1,0 +1,48 @@
+.logs-page {
+  min-height: 100svh;
+  .page-header {
+    background-color: antiquewhite;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    .logo {
+      margin-bottom: 0;
+    }
+  }
+  .filter-sider {
+    padding: 1rem;
+    .multi-select {
+      flex: auto;
+    }
+    .label {
+      font-size: 1rem !important;
+    }
+  }
+
+  .log-viewer-list-layout {
+    padding: 2rem 4rem;
+    .search-box {
+      background-color: #fff;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #d9d9d9;
+      .select-by-options {
+        width: 180px;
+        :global(.ant-select-selector) {
+          border: none;
+        }
+      }
+      .range-picker {
+        width: 400px;
+      }
+    }
+
+    .logs-details-container {
+      .log-details-box {
+        padding: 1rem;
+        border: 1px solid #d9d9d9;
+        border-radius: 6px;
+      }
+    }
+  }
+}

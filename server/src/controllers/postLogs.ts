@@ -5,6 +5,7 @@ import { z } from "zod";
 
 // 1. Zod schema is the single source of truth.
 const logSchema = z.object({
+  id: z.string(),
   level: z.enum(["error", "warn", "info"]),
   message: z.string(),
   resourceId: z.string(),
@@ -40,11 +41,8 @@ const handlePostLogs = async (
     const fileData = await fs.readFile(logsFilePath, "utf8");
     const existingLogs: Log[] = JSON.parse(fileData);
 
-    const existingSpanIds = new Set(
-      existingLogs.map((item: Log) => item.spanId)
-    );
-    if (existingSpanIds.has(newLog.spanId)) {
-      // BUG FIX: Added 'return' to stop execution after sending the error.
+    const existingSpanIds = new Set(existingLogs.map((item: Log) => item.id));
+    if (existingSpanIds.has(newLog.id)) {
       res.status(409).json({
         message: "Duplicate log: A log with this spanId already exists.",
       });

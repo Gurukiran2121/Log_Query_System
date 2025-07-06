@@ -78,7 +78,7 @@ const handleGetLogs = async (
       ) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 
-    res.status(200).json(filteredLogs);
+    res.status(200).json({ logs: filteredLogs, total: logs.length });
     return;
   } catch (error) {
     next(error);
