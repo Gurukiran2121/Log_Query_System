@@ -33,7 +33,9 @@ const searchByOptions = [
 const LogsQueryLayout = () => {
   const [level, setLevel] = useState<string | null>(null);
   const [searchBy, setSearchBy] = useState<string | null>("message");
-  const { isLogsLoading, fetchLogs, error, logs, totalLogs } = useLogs();
+  const [spanId, setSelectedSpanId] = useState<string | null>(null);
+  const { isLogsLoading, fetchLogs, error, logs, totalLogs, spanIdOptions } =
+    useLogs();
 
   const handleLevelChange = (value: string) => {
     setLevel(value);
@@ -41,6 +43,10 @@ const LogsQueryLayout = () => {
 
   const handleSearchByOptionChange = (value: string) => {
     setSearchBy(value);
+  };
+
+  const handleSpanIdChange = (value: string) => {
+    setSelectedSpanId(value);
   };
 
   useEffect(() => {
@@ -106,10 +112,10 @@ const LogsQueryLayout = () => {
                 <Select
                   className={styles["multi-select"]}
                   mode="multiple"
-                  options={levelOptions}
-                  placeholder="Select levels"
-                  value={level}
-                  onChange={handleLevelChange}
+                  options={spanIdOptions}
+                  placeholder="Select Span Id"
+                  value={spanId}
+                  onChange={handleSpanIdChange}
                 />
               </Flex>
             </Flex>
@@ -155,7 +161,6 @@ const LogsQueryLayout = () => {
                       {(item: Logs) => (
                         <List.Item key={item.id}>
                           <List.Item.Meta
-                            // avatar={<Avatar src={item.avatar} />}
                             title={item.level}
                             description={renderDescription(
                               item.message,

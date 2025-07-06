@@ -19,13 +19,15 @@ interface LogsStore {
   error: Error | null;
   fetchLogs: () => void;
   totalLogs: number;
+  spanIdOptions: Record<string, string>[];
 }
 
-const useLogs = create<LogsStore>((set) => ({
+const useLogs = create<LogsStore>((set, get) => ({
   logs: [],
   isLogsLoading: false,
   error: null,
   totalLogs: 0,
+  spanIdOptions: [],
   fetchLogs: async () => {
     set({ isLogsLoading: true });
     try {
@@ -36,6 +38,15 @@ const useLogs = create<LogsStore>((set) => ({
           isLogsLoading: false,
           totalLogs: response.data.total,
         });
+        const currentLogs = get().logs;
+        const uniqueSpanIds = [
+          ...new Set(currentLogs.map((item) => item.spanId)),
+        ];
+        const newSpanIdOptions = uniqueSpanIds.map((id) => ({
+          label: id,
+          value: id,
+        }));
+        set({ spanIdOptions: newSpanIdOptions });
       }
     } catch (error) {
       set({ error: error as Error, isLogsLoading: false });
