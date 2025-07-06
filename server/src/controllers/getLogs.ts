@@ -26,10 +26,19 @@ const handleGetLogs = async (
 
     const logsData = await fs.readFile(logsFilePath, "utf8");
     let logs = JSON.parse(logsData);
+
+    const spanIdList = [...new Set(logs.map((item: Log) => item.spanId))];
+
     let filteredLogs = logs;
 
     if (level) {
-      filteredLogs = filteredLogs.filter((log: Log) => log.level === level);
+      // Split the comma-separated string into an array of levels
+      const levelArray = (level as string).split(",").map((l) => l.trim());
+
+      // Check if the log's level is included in the array
+      filteredLogs = filteredLogs.filter((log: Log) =>
+        levelArray.includes(log.level)
+      );
     }
     if (resourceId) {
       filteredLogs = filteredLogs.filter(
@@ -50,7 +59,14 @@ const handleGetLogs = async (
     }
 
     if (spanId) {
-      filteredLogs = filteredLogs.filter((log: Log) => log.spanId === spanId);
+      // 1. Split the comma-separated string into an array of individual IDs.
+      // We also trim each ID to handle any whitespace (e.g., "id1, id2").
+      const spanIdArray = (spanId as string).split(",").map((id) => id.trim());
+
+      // 2. Filter by checking if the log's spanId is in the array.
+      filteredLogs = filteredLogs.filter((log: Log) =>
+        spanIdArray.includes(log.spanId)
+      );
     }
 
     if (commit) {
@@ -78,7 +94,9 @@ const handleGetLogs = async (
       ) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 
-    res.status(200).json({ logs: filteredLogs, total: logs.length });
+    res
+      .status(200)
+      .json({ logs: filteredLogs, total: logs.length, spanId: spanIdList });
     return;
   } catch (error) {
     next(error);

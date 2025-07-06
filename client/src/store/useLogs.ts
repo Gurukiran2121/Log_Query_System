@@ -13,11 +13,13 @@ export interface Logs {
   metadata: Record<string, string>;
 }
 
+type filters = Record<string, string>;
+
 interface LogsStore {
   logs: Logs[];
   isLogsLoading: boolean;
   error: Error | null;
-  fetchLogs: () => void;
+  fetchLogs: (filters?: filters) => void;
   totalLogs: number;
   spanIdOptions: Record<string, string>[];
 }
@@ -28,21 +30,17 @@ const useLogs = create<LogsStore>((set, get) => ({
   error: null,
   totalLogs: 0,
   spanIdOptions: [],
-  fetchLogs: async () => {
+  fetchLogs: async (filters) => {
     set({ isLogsLoading: true });
     try {
-      const response = await apiClient.get("/logs");
+      const response = await apiClient.get("/logs", { params: filters });
       if (response.status === 200) {
         set({
           logs: response.data.logs,
           isLogsLoading: false,
           totalLogs: response.data.total,
         });
-        const currentLogs = get().logs;
-        const uniqueSpanIds = [
-          ...new Set(currentLogs.map((item) => item.spanId)),
-        ];
-        const newSpanIdOptions = uniqueSpanIds.map((id) => ({
+        const newSpanIdOptions = response.data.spanId.map((id: string) => ({
           label: id,
           value: id,
         }));

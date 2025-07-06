@@ -10,8 +10,9 @@ import {
   Space,
 } from "antd";
 import VirtualList from "rc-virtual-list";
+import { debounce } from "lodash";
 import styles from "./LogsQueryLayout.module.scss";
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useLogs, { type Logs } from "../store/useLogs";
 
 const { Sider, Header, Content } = Layout;
@@ -31,13 +32,14 @@ const searchByOptions = [
 ];
 
 const LogsQueryLayout = () => {
-  const [level, setLevel] = useState<string | null>(null);
+  const [level, setLevel] = useState<string[] | null>(null);
   const [searchBy, setSearchBy] = useState<string | null>("message");
-  const [spanId, setSelectedSpanId] = useState<string | null>(null);
+  const [spanId, setSelectedSpanId] = useState<string[] | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const { isLogsLoading, fetchLogs, error, logs, totalLogs, spanIdOptions } =
     useLogs();
 
-  const handleLevelChange = (value: string) => {
+  const handleLevelChange = (value: string[]) => {
     setLevel(value);
   };
 
@@ -45,10 +47,37 @@ const LogsQueryLayout = () => {
     setSearchBy(value);
   };
 
-  const handleSpanIdChange = (value: string) => {
+  const handleSpanIdChange = (value: string[]) => {
     setSelectedSpanId(value);
   };
 
+  const debounceFetch = useMemo(
+    () =>
+      debounce((filters) => {
+        fetchLogs(filters);
+      }, 500),
+    []
+  );
+
+  const handleSearchLogs = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  //filters api call
+  useEffect(() => {
+    const filters = {
+      [searchBy as string]: searchTerm.trim(),
+    };
+    if (spanId && spanId?.length > 0) {
+      filters.spanId = spanId.join(",");
+    }
+    if (level && level.length > 0) {
+      filters.level = level.join(",");
+    }
+    debounceFetch(filters);
+  }, [searchTerm, searchBy, debounceFetch, spanId, level]);
+
+  //initial get call
   useEffect(() => {
     fetchLogs();
   }, []);
@@ -114,6 +143,7 @@ const LogsQueryLayout = () => {
                   mode="multiple"
                   options={spanIdOptions}
                   placeholder="Select Span Id"
+                  defaultValue={null}
                   value={spanId}
                   onChange={handleSpanIdChange}
                 />
@@ -130,7 +160,12 @@ const LogsQueryLayout = () => {
                   className={styles["select-by-options"]}
                   onChange={handleSearchByOptionChange}
                 ></Select>
-                <Input.Search variant="borderless" placeholder="Search logs" />
+                <Input.Search
+                  variant="borderless"
+                  placeholder="Search logs"
+                  value={searchTerm}
+                  onChange={handleSearchLogs}
+                />
                 <DatePicker.RangePicker
                   rootClassName={styles["range-picker"]}
                   variant="borderless"
@@ -143,7 +178,9 @@ const LogsQueryLayout = () => {
                   <Typography.Title level={5}>
                     Total Logs : {totalLogs}
                   </Typography.Title>
-                  <Typography.Title level={5}>Showing </Typography.Title>
+                  <Typography.Title level={5}>
+                    Showing {logs.length} results
+                  </Typography.Title>
                 </Flex>
 
                 <Flex

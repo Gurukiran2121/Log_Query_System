@@ -4,8 +4,6 @@ const url = `${import.meta.env.VITE_SERVER_BASE_URL}${
   import.meta.env.VITE_API_VERSION
 }`;
 
-console.log(url);
-
 const axiosConfig = {
   baseURL: url,
 
