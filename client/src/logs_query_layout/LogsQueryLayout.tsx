@@ -74,7 +74,7 @@ const LogsQueryLayout = () => {
   //filters api call
   useEffect(() => {
     const filters: Record<string, string> = {};
-    if (searchBy) {
+    if (searchBy && searchTerm) {
       filters[searchBy] = searchTerm.trim();
     }
     if (spanId && spanId?.length > 0) {
