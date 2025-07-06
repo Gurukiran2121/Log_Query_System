@@ -188,28 +188,32 @@ const LogsQueryLayout = () => {
                   vertical
                   className={styles["logs-details-container"]}
                 >
-                  <List>
-                    <VirtualList
-                      data={logs}
-                      itemKey="id"
-                      itemHeight={47}
-                      height={600}
-                    >
-                      {(item: Logs) => (
-                        <List.Item key={item.id}>
-                          <List.Item.Meta
-                            title={item.level}
-                            description={renderDescription(
-                              item.message,
-                              item.resourceId,
-                              item.spanId,
-                              item.timestamp
-                            )}
-                          />
-                        </List.Item>
-                      )}
-                    </VirtualList>
-                  </List>
+                  {logs.length > 0 ? (
+                    <List>
+                      <VirtualList
+                        data={logs}
+                        itemKey="id"
+                        itemHeight={47}
+                        height={600}
+                      >
+                        {(item: Logs) => (
+                          <List.Item key={item.id}>
+                            <List.Item.Meta
+                              title={item.level}
+                              description={renderDescription(
+                                item.message,
+                                item.resourceId,
+                                item.spanId,
+                                item.timestamp
+                              )}
+                            />
+                          </List.Item>
+                        )}
+                      </VirtualList>
+                    </List>
+                  ) : (
+                    <Typography.Text>No logs found...</Typography.Text>
+                  )}
                 </Flex>
               </Flex>
             </Flex>
