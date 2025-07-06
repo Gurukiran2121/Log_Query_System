@@ -24,7 +24,7 @@ interface LogsStore {
   spanIdOptions: Record<string, string>[];
 }
 
-const useLogs = create<LogsStore>((set, get) => ({
+const useLogs = create<LogsStore>((set) => ({
   logs: [],
   isLogsLoading: false,
   error: null,

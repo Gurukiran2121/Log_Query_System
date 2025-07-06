@@ -14,6 +14,7 @@ import { debounce } from "lodash";
 import styles from "./LogsQueryLayout.module.scss";
 import React, { useEffect, useMemo, useState } from "react";
 import useLogs, { type Logs } from "../store/useLogs";
+import type { RangePickerProps } from "antd/es/date-picker";
 
 const { Sider, Header, Content } = Layout;
 
@@ -36,6 +37,7 @@ const LogsQueryLayout = () => {
   const [searchBy, setSearchBy] = useState<string | null>("message");
   const [spanId, setSelectedSpanId] = useState<string[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [dateRange, setDateRange] = useState<RangePickerProps["value"]>(null);
   const { isLogsLoading, fetchLogs, error, logs, totalLogs, spanIdOptions } =
     useLogs();
 
@@ -63,6 +65,10 @@ const LogsQueryLayout = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleDateRangeChange: RangePickerProps["onChange"] = (dates) => {
+    setDateRange(dates);
+  };
+
   //filters api call
   useEffect(() => {
     const filters = {
@@ -74,8 +80,13 @@ const LogsQueryLayout = () => {
     if (level && level.length > 0) {
       filters.level = level.join(",");
     }
+
+    if (dateRange && dateRange[0] && dateRange[1]) {
+      filters.timestamp_start = dateRange[0].toISOString();
+      filters.timestamp_end = dateRange[1].toISOString();
+    }
     debounceFetch(filters);
-  }, [searchTerm, searchBy, debounceFetch, spanId, level]);
+  }, [searchTerm, searchBy, debounceFetch, spanId, level, dateRange]);
 
   //initial get call
   useEffect(() => {
@@ -167,9 +178,11 @@ const LogsQueryLayout = () => {
                   onChange={handleSearchLogs}
                 />
                 <DatePicker.RangePicker
+                  value={dateRange}
                   rootClassName={styles["range-picker"]}
                   variant="borderless"
                   size="large"
+                  onChange={handleDateRangeChange}
                 />
               </Flex>
 
