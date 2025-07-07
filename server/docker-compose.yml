@@ -1,8 +1,32 @@
 services:
-  server:
-    build: .
+  # Production Service
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8080:8080"
     env_file:
       - .env
-    container_name: log_query_system
+    container_name: log_sift_prod
+    volumes:
+      - logs_data:/app/database
+
+  # Development Service
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    container_name: log_sift_dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - logs_data:/app/database
+
+# Defines the named volume for persisting log data
+volumes:
+  logs_data:
